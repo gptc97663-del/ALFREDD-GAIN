@@ -1,0 +1,29 @@
+
+name: Build ALFREDD Gain VST3
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Descargar el proyecto
+        uses: actions/checkout@v4
+
+      - name: Instalar CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Compilar plugin VST3
+        shell: pwsh
+        run: |
+          cmake -S ALFREDDGain -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release --parallel 2
+
+      - name: Guardar plugin compilado
+        uses: actions/upload-artifact@v4
+        with:
+          name: ALFREDD-Gain-VST3
+          path: build/**/ALFREDD Gain.vst3/
+          if-no-files-found: error
